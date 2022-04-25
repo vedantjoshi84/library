@@ -1,0 +1,56 @@
+kubectl create secret generic mysql-password -n database --from-literal rootpassword=Pass@123 --dry-run -oyaml > secret.yaml
+
+kubectl create ns database --dry-run -oyaml > ns.yaml
+
+kubectl create -f ns.yaml
+kubectl create -f secret.yaml
+
+kubectl get storageclasses.storage.k8s.io
+
+kubectl create -f pvc.yaml
+kubectl get pvc -n database
+kubectl get persistentvolume
+
+kubectl create -f deployment.yaml
+kubectl get pods -n database
+
+kubectl create deployment restapi --image vedantjoshi84/library:0.1.0 -n restapi --dry-run -oyaml > restapi.yaml
+kubectl create ns restapi --dry-run=client -oyaml > ns.yaml
+
+kubectl create -f ns.yaml
+
+kubectl create configmap restapi-cm -n restapi --from-literal host=localhost:8080 --from-literal dbname=library --dry-run=client -oyaml > configmap.yaml
+kubectl create -f configmap.yaml -n restapi
+kubectl create -f secret.yaml
+kubectl create -f service.yaml
+
+kubectl get endpoints -n database
+kubectl get pods -n database -owide
+
+kubectl apply -f configmap.yaml -n restapi
+kubectl get configmaps restapi-cm -oyaml -n restapi
+kubectl get configmaps -n restapi
+kubectl get secret -n restapi
+
+kubectl create -f restapi.yaml -n restapi
+kubectl get pods -n restapi
+watch kubectl get pods -n restapi
+
+kubectl get deployments.apps -n restapi
+kubectl expose deployment restapi -n restapi --port 8080 --dry-run=client -oyaml > service.yaml
+kubectl create -f service.yaml
+
+kubectl get all -n restapi
+
+kubectl port-forward -n restapi svc/restapi 8080
+
+kubectl logs -f -n restapi restapi-6c95cf6df5-hr686
+
+echo UGFzc0AxMjM= | base64 -d
+Pass@123%
+
+kubectl exec -it mysql-76bf558d8c-7jnxd -n database bash
+# mysql -u root --password=Pass@123
+
+kubectl get services -n restapi
+kubectl get service -n restapi -oyaml
