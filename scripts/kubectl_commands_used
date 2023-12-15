@@ -1,7 +1,7 @@
 References:
 https://kubernetes.io/docs/concepts/services-networking/service/
 
-kubectl create secret generic mysql-password -n database --from-literal rootpassword=Pass@123 --dry-run -oyaml > secret.yaml
+kubectl create secret generic mysql-password -n database --from-literal rootpassword=<redacted> --dry-run -oyaml > secret.yaml
 
 kubectl create ns database --dry-run -oyaml > ns.yaml
 
@@ -49,11 +49,11 @@ kubectl port-forward -n restapi svc/restapi 8080
 
 kubectl logs -f -n restapi restapi-6c95cf6df5-hr686
 
-echo UGFzc0AxMjM= | base64 -d
-Pass@123%
+echo <base64_encoded_string> | base64 -d
+<redacted>%
 
 kubectl exec -it mysql-76bf558d8c-7jnxd -n database bash
-# mysql -u root --password=Pass@123
+# mysql -u root --password=<redacted>
 
 kubectl get services -n restapi
 kubectl get service -n restapi -oyaml
