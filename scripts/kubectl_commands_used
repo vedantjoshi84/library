@@ -1,3 +1,6 @@
+References:
+https://kubernetes.io/docs/concepts/services-networking/service/
+
 kubectl create secret generic mysql-password -n database --from-literal rootpassword=Pass@123 --dry-run -oyaml > secret.yaml
 
 kubectl create ns database --dry-run -oyaml > ns.yaml
@@ -14,7 +17,7 @@ kubectl get persistentvolume
 kubectl create -f deployment.yaml
 kubectl get pods -n database
 
-kubectl create deployment restapi --image vedantjoshi84/library:0.1.0 -n restapi --dry-run -oyaml > restapi.yaml
+kubectl create deployment restapi --image vedantjoshi84/library:0.1.2 -n restapi --dry-run -oyaml > restapi.yaml
 kubectl create ns restapi --dry-run=client -oyaml > ns.yaml
 
 kubectl create -f ns.yaml
@@ -22,8 +25,8 @@ kubectl create -f ns.yaml
 kubectl create configmap restapi-cm -n restapi --from-literal host=localhost:8080 --from-literal dbname=library --dry-run=client -oyaml > configmap.yaml
 kubectl create -f configmap.yaml -n restapi
 kubectl create -f secret.yaml
-kubectl create -f service.yaml
 
+kubectl create -f service.yaml
 kubectl get endpoints -n database
 kubectl get pods -n database -owide
 
@@ -54,3 +57,7 @@ kubectl exec -it mysql-76bf558d8c-7jnxd -n database bash
 
 kubectl get services -n restapi
 kubectl get service -n restapi -oyaml
+
+ kubectl expose deployment -n restapi restapi --type NodePort --port 8080 --dry-run=client -oyaml > nodeport.yaml
+ kubectl create -f nodeport.yaml
+ kubectl get service -n restapi

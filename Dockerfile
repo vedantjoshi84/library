@@ -1,4 +1,4 @@
-FROM golang:1.17.2
+FROM golang:1.20.7
 
 WORKDIR /home
 COPY ./pkg /home
